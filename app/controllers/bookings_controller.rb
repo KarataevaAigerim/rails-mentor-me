@@ -4,14 +4,21 @@ class BookingsController < ApplicationController
   def index
     # @mentee_bookings = Booking.where(user_id: current_user.id)
     # @mentor_bookings = Booking.where(mentor_id: current_user.id)
+    
+    # mentor = Mentor.find_by_user_id(current_user.id)
+    # @mentor_bookings = Booking.where(mentor_id: mentor.id)
+    # @mentee_bookings = Booking.where(user_id: current_user.id)
+    # @review = Review.new
+
     mentor = Mentor.find_by_user_id(current_user.id)
-    @mentor_bookings = Booking.where(mentor_id: mentor.id)
+    @mentor_bookings = mentor.present? ? Booking.where(mentor_id: mentor.id) : []
     @mentee_bookings = Booking.where(user_id: current_user.id)
     @review = Review.new
   end
 
   def create
     @booking = @mentor.bookings.build(booking_params)
+    @mentor = Mentor.find(params[:mentor_id])
 
     # Check for conflicting bookings
     if Booking.where(mentor_id: @mentor.id)
